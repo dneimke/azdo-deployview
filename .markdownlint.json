@@ -1,0 +1,15 @@
+{
+    "MD013": false,
+    "MD004": false,
+    "MD007": false,
+    "MD022": false,
+    "MD029": false,
+    "MD032": false,
+    "MD033": {
+        "allowed_elements": [
+            "file"
+        ]
+    },
+    "MD041": false,
+    "no-hard-tabs": false
+}

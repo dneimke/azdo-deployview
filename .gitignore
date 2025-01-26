@@ -1,0 +1,64 @@
+## .NET Core
+bin/
+obj/
+*.user
+*.userosscache
+*.suo
+.vs/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+## Azure Functions
+local.settings.json
+*.azurefunc.json
+
+## Blazor
+*.blazor.config
+wwwroot/css/*.min.css
+wwwroot/js/*.min.js
+
+## Node (if using any npm packages)
+node_modules/
+npm-debug.log*
+
+## Environment files
+.env
+*.env.local
+appsettings.*.json
+!appsettings.json
+
+## Database
+*.dbmdl
+*.jfm
+*.mdf
+*.ldf
+
+## IDE
+.idea/
+*.swp
+*.swo
+*._*
+.DS_Store
+
+## Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## Project-specific
+deployment-logs/
+temp/
+dist/
