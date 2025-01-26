@@ -13,6 +13,14 @@ RUN apt-get update && \
     dpkg -i /tmp/powershell.deb && \
     rm -rf /tmp/powershell.deb
 
+# Install Azure CLI
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
+RUN apt-get update && apt-get install -y curl && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g azure-functions-core-tools@4 --unsafe-perm true
+
 # If you are using a database, you may need to add commands to install necessary
 # database clients or tools here. For example, to install the PostgreSQL client:
 # RUN apt-get update && apt-get install -y postgresql-client
