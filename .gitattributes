@@ -1,0 +1,36 @@
+# Set default behavior to automatically normalize line endings
+* text=auto eol=lf
+
+# Source code
+*.bat    text eol=crlf
+*.cmd    text eol=crlf
+*.ps1    text eol=crlf linguist-language=PowerShell
+*.psd1   linguist-language=PowerShell
+*.psm1   linguist-language=PowerShell
+*.sh     text eol=lf
+*.js     text
+*.ts     text
+*.json   text
+*.yml    text
+*.yaml   text
+*.md     text
+*.txt    text
+
+# Documentation
+*.pdf    binary
+*.doc    binary
+*.docx   binary
+docs/*   linguist-documentation
+
+# Graphics
+*.png    binary
+*.jpg    binary
+*.gif    binary
+*.ico    binary
+*.svg    text
+
+# Font files
+*.ttf    binary
+*.eot    binary
+*.woff   binary
+*.woff2  binary
