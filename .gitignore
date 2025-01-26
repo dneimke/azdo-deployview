@@ -62,3 +62,8 @@ bld/
 deployment-logs/
 temp/
 dist/
+
+# Local configuration scripts
+/docs/creating-pat-token.md
+/scripts
+scripts/Invoke-LocalRun.ps1
