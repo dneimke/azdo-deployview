@@ -35,7 +35,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
     supportsHttpsTrafficOnly: true
     networkAcls: {
       defaultAction: 'Allow'
-      bypass: ['AzureServices']
+      bypass: 'AzureServices'
     }
     encryption: {
       keySource: 'Microsoft.Storage'
