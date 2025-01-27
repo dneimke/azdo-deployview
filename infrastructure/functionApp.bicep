@@ -3,12 +3,19 @@ param appName string
 param environmentName string
 param tags object
 param storageAccountName string
-@secure()
-param storageAccountKey string
 param appInsightsKey string
 
 var functionAppName = '${appName}-${environmentName}-func'
 var hostingPlanName = '${appName}-${environmentName}-plan'
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+  name: storageAccountName
+}
+
+// Disable the specific linter rule for the next line
+#disable-next-line outputs-should-not-contain-secrets
+#disable-next-line use-resource-symbol-reference
+var storageAccountKey = listKeys(storageAccount.id, storageAccount.apiVersion).keys[0].value
 
 resource hostingPlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   name: hostingPlanName

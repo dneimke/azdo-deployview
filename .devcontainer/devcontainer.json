@@ -24,6 +24,7 @@
         "ms-azuretools.vscode-azurefunctions",
         "ms-azuretools.vscode-bicep",
         "ms-vscode.powershell",
+        "ms-azuretools.vscode-azure-github-copilot",
         "Azurite.azurite",
         "github.vscode-github-actions",
         "dbaeumer.vscode-eslint",

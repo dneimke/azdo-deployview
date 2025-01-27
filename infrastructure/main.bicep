@@ -51,7 +51,6 @@ module functionApp './functionApp.bicep' = {
     environmentName: environmentName
     tags: tags
     storageAccountName: storage.outputs.storageAccountName
-    storageAccountKey: storage.outputs.storageAccountKey
     appInsightsKey: appInsights.outputs.instrumentationKey
   }
 }

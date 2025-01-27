@@ -57,11 +57,5 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   }
 }
 
-var keys = storageAccount.listKeys().keys[0].value
-
 @description('Storage account name')
 output storageAccountName string = storageAccount.name
-
-#disable-next-line outputs-should-not-contain-secrets
-@description('Storage account primary key')
-output storageAccountKey string = keys
