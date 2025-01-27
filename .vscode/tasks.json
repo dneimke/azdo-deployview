@@ -66,16 +66,6 @@
       "options": {
         "cwd": "${workspaceFolder}/az-devops-webhooks"
       }
-    },
-    {
-      "type": "func",
-      "dependsOn": "build (functions)",
-      "options": {
-        "cwd": "${workspaceFolder}/az-devops-webhooks/bin/Debug/net8.0"
-      },
-      "command": "host start",
-      "isBackground": true,
-      "problemMatcher": "$func-dotnet-watch"
     }
   ]
 }

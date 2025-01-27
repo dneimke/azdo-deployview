@@ -5,7 +5,6 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /app
 
 # Install Node.js and npm for frontend development (if needed)
-# You can choose a specific version of Node.js if required
 USER root
 RUN apt-get update && \
     apt-get install -y wget && \
@@ -21,13 +20,20 @@ RUN apt-get update && apt-get install -y curl && \
     apt-get install -y nodejs && \
     npm install -g azure-functions-core-tools@4 --unsafe-perm true
 
-# If you are using a database, you may need to add commands to install necessary
-# database clients or tools here. For example, to install the PostgreSQL client:
-# RUN apt-get update && apt-get install -y postgresql-client
+# Create the user
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
 
-# (Optional) Install other useful tools
-# For example: Git, debugging tools, etc.
-# RUN apt-get update && apt-get install -y git
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    && apt-get update \
+    && apt-get install -y sudo \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME
+
+# Switch to non-root user by default
+USER $USERNAME
 
 # Copy the application files to the container (if you want to build within the container)
 # Consider using a .dockerignore file to exclude unnecessary files/folders.

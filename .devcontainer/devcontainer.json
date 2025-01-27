@@ -20,7 +20,15 @@
             ]
         }
     },
-    "forwardPorts": [],
-    "postCreateCommand": "",
-    "remoteUser": "root"
+    "forwardPorts": [
+        7071,    // Azure Functions runtime
+        10000,   // Azurite Blob service
+        10001,   // Azurite Queue service
+        10002    // Azurite Table service
+    ],
+    "postCreateCommand": "dotnet restore && dotnet build && sudo chown -R vscode:vscode /workspaces/azdo-deployview",
+    "remoteUser": "vscode",
+    "updateRemoteUserUID": true,
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/azdo-deployview,type=bind,consistency=cached",
+    "workspaceFolder": "/workspaces/azdo-deployview"
 }
