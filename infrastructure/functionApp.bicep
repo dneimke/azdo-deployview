@@ -3,6 +3,7 @@ param appName string
 param environmentName string
 param tags object
 param storageAccountName string
+@secure()
 param storageAccountKey string
 param appInsightsKey string
 
