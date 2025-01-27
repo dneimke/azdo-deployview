@@ -1,43 +1,45 @@
 {
-    "name": "azdo-deployview",
-    "dockerFile": "Dockerfile",
+  "name": "azdo-deployview",
+  "dockerFile": "Dockerfile",
   "features": {
     "ghcr.io/devcontainers/features/dotnet:2.2.0": {
       "version": "7.0"
     },
-    "ghcr.io/devcontainers/features/github-cli:1": {},
-  },"customizations": {
-        "vscode": {
-            "settings": {
-                "terminal.integrated.defaultProfile.linux": "pwsh",
-                "terminal.integrated.profiles.linux": {
-                    "pwsh": {
-                        "path": "/usr/bin/pwsh"
-                    }
-                }
-            },
-            "extensions": [
-                "ms-dotnettools.csharp",
-                "ms-dotnettools.csdevkit",
-                "ms-azuretools.vscode-docker",
-                "ms-azuretools.vscode-azurefunctions",
-                "ms-vscode.powershell",
-                "Azurite.azurite",
-                "github.vscode-github-actions",
-                "dbaeumer.vscode-eslint",
-                "esbenp.prettier-vscode"
-            ]
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "pwsh",
+        "terminal.integrated.profiles.linux": {
+          "pwsh": {
+            "path": "/usr/bin/pwsh"
+          }
         }
-    },
-    "forwardPorts": [
-        7071,    // Azure Functions runtime
-        10000,   // Azurite Blob service
-        10001,   // Azurite Queue service
-        10002    // Azurite Table service
-    ],
-    "postCreateCommand": "dotnet restore && dotnet build && sudo chown -R vscode:vscode /workspaces/azdo-deployview",
-    "remoteUser": "vscode",
-    "updateRemoteUserUID": true,
-    "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/azdo-deployview,type=bind,consistency=cached",
-    "workspaceFolder": "/workspaces/azdo-deployview"
+      },
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
+        "ms-azuretools.vscode-docker",
+        "ms-azuretools.vscode-azurefunctions",
+        "ms-azuretools.vscode-bicep",
+        "ms-vscode.powershell",
+        "Azurite.azurite",
+        "github.vscode-github-actions",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  },
+  "forwardPorts": [
+    7071, // Azure Functions runtime
+    10000, // Azurite Blob service
+    10001, // Azurite Queue service
+    10002 // Azurite Table service
+  ],
+  "postCreateCommand": "dotnet restore && dotnet build && sudo chown -R vscode:vscode /workspaces/azdo-deployview",
+  "remoteUser": "vscode",
+  "updateRemoteUserUID": true,
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/azdo-deployview,type=bind,consistency=cached",
+  "workspaceFolder": "/workspaces/azdo-deployview"
 }

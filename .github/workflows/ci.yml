@@ -1,36 +1,79 @@
-name: CI Build
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install Azure Functions Core Tools
+        run: |
+          curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+          sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+          sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-$(lsb_release -cs)-prod $(lsb_release -cs) main" > /etc/apt/sources.list.d/dotnetdev.list'
+          sudo apt-get update
+          sudo apt-get install azure-functions-core-tools-4
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test --no-build --configuration Release --verbosity normal
+
+      - name: Publish Function App
+        run: dotnet publish --configuration Release --output ./publish
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: functionapp
+          path: ./publish
+
+  deploy:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: functionapp
+          path: ./publish
 
-    - name: Install Azure Functions Core Tools
-      run: |
-        curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-        sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
-        sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-$(lsb_release -cs)-prod $(lsb_release -cs) main" > /etc/apt/sources.list.d/dotnetdev.list'
-        sudo apt-get update
-        sudo apt-get install azure-functions-core-tools-4
+      - name: "Az CLI login"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Deploy Infrastructure
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+          resourceGroupName: ${{ secrets.AZURE_RG }}
+          template: ./infrastructure/main.bicep
+          parameters: "environmentName=prod"
 
-    - name: Build
-      run: dotnet build --no-restore --configuration Release
-
-    - name: Test
-      run: dotnet test --no-build --configuration Release --verbosity normal
+      - name: "Deploy Function App"
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ secrets.AZURE_FUNCTION_APP_NAME }}
+          package: "./publish"
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
