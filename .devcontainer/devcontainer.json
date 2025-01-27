@@ -1,7 +1,12 @@
 {
     "name": "azdo-deployview",
     "dockerFile": "Dockerfile",
-    "customizations": {
+  "features": {
+    "ghcr.io/devcontainers/features/dotnet:2.2.0": {
+      "version": "7.0"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+  },"customizations": {
         "vscode": {
             "settings": {
                 "terminal.integrated.defaultProfile.linux": "pwsh",
@@ -16,7 +21,11 @@
                 "ms-dotnettools.csdevkit",
                 "ms-azuretools.vscode-docker",
                 "ms-azuretools.vscode-azurefunctions",
-                "Azurite.azurite"
+                "ms-vscode.powershell",
+                "Azurite.azurite",
+                "github.vscode-github-actions",
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode"
             ]
         }
     },
