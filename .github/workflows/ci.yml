@@ -7,13 +7,14 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
+env:
+  DOTNET_VERSION: "8.0.x"
+  CONFIGURATION: "Release"
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: "./publish"
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      DOTNET_VERSION: "8.0.x"
-      CONFIGURATION: "Release"
-      AZURE_FUNCTIONAPP_PACKAGE_PATH: "./publish"
 
     steps:
       - uses: actions/checkout@v4
@@ -48,7 +49,7 @@ jobs:
 
   deploy-dev:
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment:
       name: production
