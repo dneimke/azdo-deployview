@@ -12,7 +12,7 @@
       "type": "process",
       "problemMatcher": "$msCompile",
       "options": {
-        "cwd": "${workspaceFolder}/AzDoWebhooks"
+        "cwd": "${workspaceFolder}/src/AzDoWebhooks"
       }
     },
     {
@@ -31,7 +31,7 @@
       },
       "problemMatcher": "$msCompile",
       "options": {
-        "cwd": "${workspaceFolder}/AzDoWebhooks"
+        "cwd": "${workspaceFolder}/src/AzDoWebhooks"
       }
     },
     {
@@ -47,7 +47,7 @@
       "type": "process",
       "problemMatcher": "$msCompile",
       "options": {
-        "cwd": "${workspaceFolder}/AzDoWebhooks"
+        "cwd": "${workspaceFolder}/src/AzDoWebhooks"
       }
     },
     {
@@ -64,7 +64,7 @@
       "dependsOn": "clean release (functions)",
       "problemMatcher": "$msCompile",
       "options": {
-        "cwd": "${workspaceFolder}/AzDoWebhooks"
+        "cwd": "${workspaceFolder}/src/AzDoWebhooks"
       }
     },
     {
@@ -74,7 +74,7 @@
       "problemMatcher": "$func-watch",
       "isBackground": true,
       "options": {
-        "cwd": "${workspaceFolder}/AzDoWebhooks"
+        "cwd": "${workspaceFolder}/src/AzDoWebhooks"
       },
       "dependsOn": "build"
     },
@@ -84,7 +84,7 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/AzDoWebhooks/AzDoWebhooks.csproj",
+        "${workspaceFolder}/src/AzDoWebhooks/AzDoWebhooks.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],

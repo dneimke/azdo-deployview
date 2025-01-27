@@ -62,7 +62,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: functionapp
-          path: ./publish
+          path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
 
       - name: "Az CLI login"
         uses: azure/login@v1
