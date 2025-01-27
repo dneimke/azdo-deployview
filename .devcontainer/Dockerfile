@@ -4,7 +4,10 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 # Set the working directory inside the container
 WORKDIR /app
 
-# Install Node.js and npm for frontend development (if needed)
+# Install required .NET workloads
+# RUN dotnet workload install azure-functions
+
+# Install PowerShell support
 USER root
 RUN apt-get update && \
     apt-get install -y wget && \
@@ -15,6 +18,7 @@ RUN apt-get update && \
 # Install Azure CLI
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 
+# Install Node.js and Azure Functions Core Tools
 RUN apt-get update && apt-get install -y curl && \
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs && \
@@ -32,22 +36,8 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
+# Ensure proper permissions for the vscode user
+RUN chown -R $USERNAME:$USERNAME /app
+
 # Switch to non-root user by default
 USER $USERNAME
-
-# Copy the application files to the container (if you want to build within the container)
-# Consider using a .dockerignore file to exclude unnecessary files/folders.
-# COPY . .
-
-# Expose the port that your ASP.NET application will listen on
-# EXPOSE 5000
-# EXPOSE 5001
-
-# Define environment variables (if needed)
-# ENV ASPNETCORE_ENVIRONMENT=Development
-# ENV ConnectionStrings__DefaultConnection="your_connection_string"
-
-# Set the entry point (you can customize this based on your project's needs)
-# If you want to build inside the container, you can add build commands here or
-# you can add commands like hot-reloading, etc.
-# CMD
