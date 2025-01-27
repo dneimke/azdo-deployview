@@ -1,60 +1,94 @@
-# Deployment Guide
+# Azure DevOps Deployment View
+
+A .NET Azure Function that integrates with Azure DevOps to provide deployment information.
 
 ## Prerequisites
-- Azure subscription
+
 - Azure CLI installed
-- Bicep CLI installed
-- Sufficient permissions to create resources in Azure
+- GitHub CLI installed
+- Azure Subscription
+- GitHub account with permissions to this repository
 
-## Setup Steps
+## Azure Setup
 
-### 1. Create Resource Group
+### 1. Create Azure Resources
+
+First, login to Azure CLI:
+
 ```bash
-az group create --name rg-azdodeploy-{env} --location {location}
+az login
 ```
 
-### 2. Deploy Infrastructure
-Deploy the Bicep templates using Azure CLI:
+Create a resource group:
+
 ```bash
-az deployment group create \
-  --resource-group rg-azdodeploy-{env} \
-  --template-file infrastructure/main.bicep \
-  --parameters environmentName={env} appName=azdodeploy
+az group create --name rg-azdodeploy-dev --location "australiasoutheast"
 ```
 
-### 3. Required Azure Resources
-The deployment will create:
-- Storage Account
-- Application Insights
-- Function App with hosting plan
+### 2. Create Service Principal
 
-### 4. Configuration
-After deployment:
-1. Note the Function App name from the deployment output
-2. Configure these Function App settings if not already set by the Bicep template:
-   - APPINSIGHTS_INSTRUMENTATIONKEY
-   - AzureWebJobsStorage
-   - FUNCTIONS_EXTENSION_VERSION
-   - FUNCTIONS_WORKER_RUNTIME
+Create a service principal with Contributor access to the resource group:
 
-### 5. Security
-Ensure:
-- Appropriate RBAC permissions are set
-- Function App uses managed identity if needed
-- Network security rules are configured as required
+```bash
+az ad sp create-for-rbac --name "azdo-deployview" \
+    --role contributor \
+    --scopes /subscriptions/{subscription-id}/resourceGroups/rg-azdodeploy-dev \
+    --sdk-auth
+```
 
-### 6. Verification
-1. Check if all resources are created successfully
-2. Verify Function App is running
-3. Test the deployment monitoring functionality
+Save the JSON output - you'll need this for the GitHub secret AZURE_CREDENTIALS.
 
-## Troubleshooting
-- Check Application Insights for function execution logs
-- Review Function App's diagnostic logs
-- Verify storage account connectivity
+### 3. Configure GitHub Secrets
+
+Add these secrets to your GitHub repository (Settings -> Secrets and variables -> Actions):
+
+- AZURE_CREDENTIALS: (JSON output from service principal creation)
+- AZURE_SUBSCRIPTION: Your Azure subscription ID
+- AZURE_RG: azdo-deployview-rg
+- AZURE_FUNCTION_APP_NAME: The name of your function app (e.g., azdo-deployview-prod-func)
+
+### 4. Configure GitHub Environment
+
+The repository uses a 'production' environment for deployments. This is automatically created by the CI/CD pipeline with:
+
+- Required reviewers
+- Wait timer (5 minutes)
+- Protected branches only
+
+### 5. Branch Protection
+
+Main branch is protected with these rules:
+
+- Requires pull request before merging
+- Requires 1 approval
+- Dismisses stale pull request approvals
+- Requires status checks to pass
+
+## Infrastructure
+
+The infrastructure is defined in Bicep files located in the /infrastructure directory:
+
+- `main.bicep`: Entry point for all infrastructure
+- `functionApp.bicep`: Function App and hosting plan
+- `storageAccount.bicep`: Storage account for Function App
+- `appInsights.bicep`: Application Insights for monitoring
+
+## Deployment
+
+The CI/CD pipeline will:
+
+- Build and test the application
+- Deploy infrastructure using Bicep
+- Deploy the Function App
+
+All deployments to production require:
+
+- Pull request approval
+- Successful build
+- Environment approval
+- 5-minute wait timer
 
 ## Notes
+
 - Replace {env} with your environment name (e.g., dev, test, prod)
 - Replace {location} with your desired Azure region
-
-
