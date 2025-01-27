@@ -2,10 +2,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Attach to .NET Functions",
+      "name": "Debug Function",
       "type": "coreclr",
       "request": "attach",
-      "processId": "${command:azureFunctions.pickProcess}"
+      "processName": "func",
+      "preLaunchTask": "func host start",
+      "justMyCode": true,
+      "sourceLinkOptions": {
+        "enabled": true
+      },
+      "sourceFileMap": {
+        "/home/site/wwwroot": "${workspaceFolder}"
+      }
     }
   ]
 }

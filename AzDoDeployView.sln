@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzDoWebhooks", "AzDoWebhooks\LocalFunctionProj.csproj", "{D94E5ADE-10A3-4E3B-9A24-F928AC74B870}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzDoWebhooks", "AzDoWebhooks\AzDoWebhooks.csproj", "{D94E5ADE-10A3-4E3B-9A24-F928AC74B870}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
