@@ -9,14 +9,14 @@ public class Functions(ILogger<Functions> logger)
 {
     private readonly ILogger<Functions> _logger = logger;
 
-    [FunctionName("HttpExample")]
+    [Function("HttpExample")]
     public IActionResult HttpExample([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
     {
         _logger.LogInformation("C# HTTP trigger function processed a request.");
         return new OkObjectResult("Welcome to Azure Functions!");
     }
 
-    [FunctionName("AzureDevOpsWebhook")]
+    [Function("AzureDevOpsWebhook")]
     public IActionResult AzureDevOpsWebhook([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req)
     {
         _logger.LogInformation("Received webhook request from Azure DevOps.");
