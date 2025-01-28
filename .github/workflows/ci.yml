@@ -37,8 +37,8 @@ jobs:
       - name: Test
         run: dotnet test --no-build --configuration ${{ env.CONFIGURATION }} --verbosity normal
 
-      - name: Publish Function App
-        run: dotnet publish --configuration ${{ env.CONFIGURATION }} --output ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+      - name: Build
+        run: dotnet publish src/AzDoWebhooks/AzDoWebhooks.csproj --configuration ${{ env.CONFIGURATION }} --output ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
