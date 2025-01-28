@@ -10,12 +10,12 @@ param environmentName string
 @maxLength(11)
 param appName string = 'azdodeploy'
 
-param cosmosDbName string = 'my-cosmos-db'
-param databaseName string = 'my-database'
-param containerName string = 'my-container'
-
 // Generate unique suffix
 var uniqueSuffix = uniqueString(resourceGroup().id, appName, environmentName)
+
+param cosmosDbName string = 'azdo-deployview'
+param databaseName string = 'release-database'
+param containerName string = 'releases'
 
 // Tags
 var tags = {
