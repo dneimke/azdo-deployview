@@ -9,15 +9,15 @@ public class Functions(ILogger<Functions> logger)
 {
     private readonly ILogger<Functions> _logger = logger;
 
-    [Function("HttpExample")]
-    public IActionResult HttpExample([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
+    [Function("HttpEcho")]
+    public IActionResult HttpEcho([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
     {
-        _logger.LogInformation("C# HTTP trigger function processed a request.");
-        return new OkObjectResult("Welcome to Azure Functions!");
+        _logger.LogInformation("HttpEcho function processed a request.");
+        return new OkObjectResult("Welcome to AzDo Webhooks!");
     }
 
-    [Function("AzureDevOpsWebhook")]
-    public IActionResult AzureDevOpsWebhook([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req)
+    [Function("AzDoReleaseWebhook")]
+    public IActionResult AzDoReleaseWebhook([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req)
     {
         _logger.LogInformation("Received webhook request from Azure DevOps.");
         return new OkObjectResult("Welcome to Azure Functions!");
