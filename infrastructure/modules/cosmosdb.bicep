@@ -1,12 +1,20 @@
 param location string
 param cosmosDbName string
 
+var locations = [
+  {
+    locationName: location
+    failoverPriority: 0
+    isZoneRedundant: false
+  }
+]
+
 resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
   name: cosmosDbName
   location: location
   kind: 'GlobalDocumentDB'
   properties: {
-    locations: location
+    locations: locations
     databaseAccountOfferType: 'Standard'
   }
 }
