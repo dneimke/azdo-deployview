@@ -10,7 +10,7 @@ var locations = [
 ]
 
 var databaseName = '${cosmosDbName}-db'
-var containerName = 'releases'
+// var containerName = 'releases'
 
 resource cosmosService 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
   name: cosmosDbName
