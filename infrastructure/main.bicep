@@ -24,7 +24,6 @@ module storage './modules/storageAccount.bicep' = {
   name: 'storageAccount'
   params: {
     location: location
-    environmentName: environmentName
     tags: tags
     appName: appName
     uniqueSuffix: uniqueSuffix
@@ -45,7 +44,7 @@ module cosmosDb './modules/cosmosdb.bicep' = {
   name: 'cosmosDbDeployment'
   params: {
     location: location
-    cosmosDbName: '${appName}-cosmos'
+    accountName: appName
   }
 }
 
@@ -55,7 +54,6 @@ module functionApp './modules/functionApp.bicep' = {
   params: {
     location: location
     appName: appName
-    environmentName: environmentName
     tags: tags
     storageAccountName: storage.outputs.storageAccountName
     appInsightsKey: appInsights.outputs.instrumentationKey

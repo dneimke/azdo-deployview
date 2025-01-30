@@ -1,12 +1,11 @@
 param location string
 param appName string
-param environmentName string
 param tags object
 param storageAccountName string
 param appInsightsKey string
 
-var functionAppName = '${appName}-${environmentName}-func'
-var hostingPlanName = '${appName}-${environmentName}-plan'
+var functionAppName = '${appName}-func'
+var hostingPlanName = '${appName}-plan'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
   name: storageAccountName

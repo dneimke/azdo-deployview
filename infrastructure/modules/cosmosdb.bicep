@@ -1,5 +1,15 @@
 param location string
-param cosmosDbName string
+
+@description('Azure Cosmos DB account name, max length 44 characters')
+param accountName string = 'sql-${uniqueString(resourceGroup().id)}'
+
+@description('The partition key for the container')
+param partitionKeyPath string = '/partitionKey'
+
+@minValue(400)
+@maxValue(1000000)
+@description('The throughput for the container')
+param throughput int = 400
 
 var locations = [
   {
@@ -9,11 +19,11 @@ var locations = [
   }
 ]
 
-var databaseName = '${cosmosDbName}-db'
-// var containerName = 'releases'
+var databaseName = '${accountName}-db'
+var containerName = 'deployments'
 
 resource cosmosService 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
-  name: cosmosDbName
+  name: accountName
   location: location
   kind: 'GlobalDocumentDB'
   properties: {
@@ -32,26 +42,36 @@ resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-05-15
   }
 }
 
-// resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
-//   parent: database // Use the databaseName parameter
-//   name: containerName
-//   properties: {
-//     resource: {
-//       id: containerName
-//       indexingPolicy: {
-//         automatic: true
-//         includedPaths: [
-//           {
-//             path: '/environment/*'
-//           }
-//           {
-//             path: '/project/*'
-//           }
-//         ]
-//         excludedPaths: []
-//       }
-//     }
-//   }
-// }
+resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
+  parent: database
+  name: containerName
+  properties: {
+    resource: {
+      id: containerName
+      indexingPolicy: {
+        automatic: true
+        includedPaths: [
+          {
+            path: '/environment/*'
+          }
+          {
+            path: '/project/*'
+          }
+        ]
+        excludedPaths: []
+      }
+      partitionKey: {
+        paths: [
+          partitionKeyPath
+        ]
+        kind: 'Hash'
+      }
+      defaultTtl: 86400
+    }
+    options: {
+      throughput: throughput
+    }
+  }
+}
 
 output cosmosDbName string = cosmosService.name // Output the name for use in other modules

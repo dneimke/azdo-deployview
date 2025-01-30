@@ -1,10 +1,6 @@
 @description('Azure region for all resources')
 param location string
 
-@description('Environment name')
-@allowed(['dev', 'test', 'prod'])
-param environmentName string
-
 @description('Application name - will be used in resource naming')
 @minLength(3)
 @maxLength(11)
@@ -18,7 +14,7 @@ param uniqueSuffix string
 param tags object
 
 // Ensure storage account name meets Azure requirements
-var storageAccountName = take('${replace(toLower(appName), '-', '')}${take(uniqueSuffix, 8)}${environmentName}', 24)
+var storageAccountName = take('${replace(toLower(appName), '-', '')}${take(uniqueSuffix, 8)}', 24)
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: storageAccountName
