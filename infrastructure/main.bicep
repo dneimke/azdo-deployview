@@ -13,10 +13,6 @@ param appName string = 'azdodeploy'
 // Generate unique suffix
 var uniqueSuffix = uniqueString(resourceGroup().id, appName, environmentName)
 
-param cosmosDbName string = 'azdo-deployview'
-param databaseName string = 'release-database'
-param containerName string = 'releases'
-
 // Tags
 var tags = {
   environment: environmentName
@@ -45,7 +41,14 @@ module appInsights './modules/appInsights.bicep' = {
   }
 }
 
-// Function App and related resources
+module cosmosDb './modules/cosmosdb.bicep' = {
+  name: 'cosmosDbDeployment'
+  params: {
+    location: location
+    cosmosDbName: '${appName}-cosmos'
+  }
+}
+
 module functionApp './modules/functionApp.bicep' = {
   name: 'functionApp'
 
@@ -56,30 +59,6 @@ module functionApp './modules/functionApp.bicep' = {
     tags: tags
     storageAccountName: storage.outputs.storageAccountName
     appInsightsKey: appInsights.outputs.instrumentationKey
-  }
-}
-
-module cosmosDb './modules/cosmosdb.bicep' = {
-  name: 'cosmosDbDeployment'
-  params: {
-    location: location
-    cosmosDbName: cosmosDbName
-  }
-}
-
-module database './modules/cosmosdb-database.bicep' = {
-  name: 'databaseDeployment'
-  params: {
-    cosmosDbName: cosmosDb.outputs.cosmosDbName // Use output from cosmosDbModule
-    databaseName: databaseName
-  }
-}
-
-module container './modules/cosmosdb-container.bicep' = {
-  name: 'containerDeployment'
-  params: {
-    databaseName: database.outputs.databaseName // Use output from databaseModule
-    containerName: containerName
   }
 }
 
