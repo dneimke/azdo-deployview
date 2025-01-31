@@ -20,7 +20,7 @@ var tags = {
 }
 
 // Storage Account
-module storage './modules/storageAccount.bicep' = {
+module storageModule './modules/storageAccount.bicep' = {
   name: 'storageAccount'
   params: {
     location: location
@@ -31,7 +31,7 @@ module storage './modules/storageAccount.bicep' = {
 }
 
 // Application Insights
-module appInsights './modules/appInsights.bicep' = {
+module appInsightsModule './modules/appInsights.bicep' = {
   name: 'appInsights'
   params: {
     location: location
@@ -40,7 +40,7 @@ module appInsights './modules/appInsights.bicep' = {
   }
 }
 
-module cosmosDb './modules/cosmosdb.bicep' = {
+module cosmosDbModule './modules/cosmosdb.bicep' = {
   name: 'cosmosDbDeployment'
   params: {
     location: location
@@ -48,17 +48,33 @@ module cosmosDb './modules/cosmosdb.bicep' = {
   }
 }
 
-module functionApp './modules/functionApp.bicep' = {
+module functionAppModule './modules/functionApp.bicep' = {
   name: 'functionApp'
 
   params: {
     location: location
     appName: appName
     tags: tags
-    storageAccountName: storage.outputs.storageAccountName
-    appInsightsKey: appInsights.outputs.instrumentationKey
+    storageAccountName: storageModule.outputs.storageAccountName
+    appInsightsKey: appInsightsModule.outputs.instrumentationKey
   }
 }
 
+// Permissions for Contributor access:
+resource cosmosDbSqlRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: '${appName}-${environmentName}-CosmosDBReaderRole'
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      subscription().id,
+      'Microsoft.DocumentDB/roles/Cosmos DB Built-in Data Contributor'
+    ) // Or Contributor
+    principalId: functionAppModule.outputs.functionAppPrincipalId
+    principalType: 'ServicePrincipal'
+  }
+  dependsOn: [
+    cosmosDbModule
+  ]
+}
+
 @description('Name of the deployed Function App')
-output functionAppName string = functionApp.outputs.functionAppName
+output functionAppName string = functionAppModule.outputs.functionAppName
