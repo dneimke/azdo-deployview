@@ -51,6 +51,10 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
           value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${storageAccountKey}'
         }
         {
+          name: 'CosmosDbConnection'
+          value: 'https://azdodeploy.documents.azure.com:443/'
+        }
+        {
           name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
           value: appInsightsKey
         }
