@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.Azure.Functions.Worker;
 
 namespace AzDoWebhooks.Models;
@@ -13,7 +14,7 @@ public class DeploymentResponse
 }
 public class Deployment
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid id { get; set; } = Guid.NewGuid();
     public string Environment { get; set; } = "";
     public string Project { get; set; } = "";
     public string Status { get; set; } = "";
