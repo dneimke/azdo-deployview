@@ -3,16 +3,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using AzDoWebhooks.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace AzDoWebhooks.Functions;
 
 public class NewDeployment
 {
     private readonly ILogger<NewDeployment> _logger;
+    private readonly IConfiguration _configuration;
 
-    public NewDeployment(ILogger<NewDeployment> logger)
+    public NewDeployment(ILogger<NewDeployment> logger, IConfiguration configuration)
     {
         _logger = logger;
+        _configuration = configuration;
     }
 
     [Function("NewDeployment")]
@@ -20,6 +23,7 @@ public class NewDeployment
     public Deployment Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
     {
         _logger.LogInformation("Received webhook request from Azure DevOps.");
+        _logger.LogInformation(_configuration["CosmosDbConnection"]);
 
         return new()
         {
