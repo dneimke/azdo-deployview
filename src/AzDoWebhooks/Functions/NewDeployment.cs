@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using AzDoWebhooks.Models;
 
 namespace AzDoWebhooks.Functions;
 
@@ -15,10 +16,18 @@ public class NewDeployment
     }
 
     [Function("NewDeployment")]
-    public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
+    [CosmosDBOutput("azdodeploy-db", "deployments", Connection = "", CreateIfNotExists = true)]
+    public Deployment Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
     {
         _logger.LogInformation("Received webhook request from Azure DevOps.");
-        return new OkObjectResult("Received webhook request from Azure DevOps.");
+
+        return new()
+        {
+            Environment = "Production",
+            Status = "In Progress",
+            DeploymentTime = DateTime.UtcNow,
+            Project = "Contoso",
+        };
     }
 }
 

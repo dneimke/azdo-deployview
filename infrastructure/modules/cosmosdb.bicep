@@ -77,5 +77,5 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
   }
 }
 
-output cosmosDbAccountId string = cosmosService.id
-output cosmosDbName string = cosmosService.name // Output the name for use in other modules
+output cosmosAccountId string = cosmosService.id
+output cosmosAccountName string = cosmosService.name
