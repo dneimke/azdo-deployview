@@ -6,7 +6,7 @@ using AzDoWebhooks.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Azure.Cosmos;
 using Azure.Identity;
-using System.Net;
+using FromBodyAttribute = Microsoft.Azure.Functions.Worker.Http.FromBodyAttribute;
 
 namespace AzDoWebhooks.Functions;
 
@@ -22,7 +22,8 @@ public class NewDeployment
     }
 
     [Function("NewDeployment")]
-    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
+    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req,
+        [FromBody] DeploymentRequest azureDeployment)
     {
         _logger.LogInformation("Received webhook request from Azure DevOps.");
         _logger.LogInformation(_configuration["CosmosDbConnection"]);
@@ -37,11 +38,11 @@ public class NewDeployment
 
         Deployment deployment = new()
         {
-            Environment = "Production",
-            Status = "In Progress",
-            DeploymentTime = DateTime.UtcNow,
-            Project = "Contoso",
-            partitionKey = "Contoso"
+            Environment = azureDeployment.Environment,
+            Status = azureDeployment.Status,
+            DeploymentTime = azureDeployment.DeploymentTime,
+            Project = azureDeployment.Project,
+            partitionKey = azureDeployment.Project
         };
 
         try

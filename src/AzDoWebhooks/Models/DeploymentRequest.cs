@@ -1,8 +1,7 @@
 namespace AzDoWebhooks.Models;
 
-public class Deployment
+public class DeploymentRequest
 {
-    public Guid id { get; set; } = Guid.NewGuid();
     public string Environment { get; set; } = "";
     public string Project { get; set; } = "";
     public string Status { get; set; } = "";
