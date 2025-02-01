@@ -49,11 +49,6 @@ module cosmosDbModule './modules/cosmosdb.bicep' = {
   }
 }
 
-resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' existing = {
-  name: 'aa'
-  scope: resourceGroup(resourceGroupName)
-}
-
 module functionAppModule './modules/functionApp.bicep' = {
   name: 'functionApp'
 
@@ -61,7 +56,6 @@ module functionAppModule './modules/functionApp.bicep' = {
     location: location
     appName: appName
     tags: tags
-    cosmosConnectionString: cosmosAccount.listConnectionStrings().connectionStrings[0].connectionString
     storageAccountName: storageModule.outputs.storageAccountName
     appInsightsKey: appInsightsModule.outputs.instrumentationKey
   }
