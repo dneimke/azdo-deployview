@@ -43,12 +43,20 @@ public class NewDeployment
             Project = "Contoso",
         };
 
-        ItemResponse<Deployment> response = await container.UpsertItemAsync<Deployment>(
-            item: deployment,
-            partitionKey: new PartitionKey(deployment.Id.ToString())
-        );
+        try
+        {
+            var response = await container.UpsertItemAsync<Deployment>(
+                item: deployment,
+                partitionKey: new PartitionKey(deployment.Project)
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("An error occurred while attempting to add {deploymentId}. {exceptionMessage}", deployment.Id, ex.ToString());
+        }
 
-        return new OkObjectResult($"Successfully added new deployment {deployment.Id.ToString()}");
+
+        return new OkObjectResult($"Successfully added new deployment {deployment.Id}");
     }
 }
 
