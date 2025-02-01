@@ -52,11 +52,11 @@ public class NewDeployment
         }
         catch (Exception ex)
         {
-            _logger.LogError("An error occurred while attempting to add {deploymentId}. {exceptionMessage}", deployment.Id, ex.ToString());
+            _logger.LogError("An error occurred while attempting to add {deploymentId}. {exceptionMessage}", deployment.id, ex.ToString());
         }
 
 
-        return new OkObjectResult($"Successfully added new deployment {deployment.Id}");
+        return new OkObjectResult($"Successfully added new deployment {deployment.id}");
     }
 }
 
