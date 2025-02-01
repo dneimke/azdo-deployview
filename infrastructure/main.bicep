@@ -60,21 +60,5 @@ module functionAppModule './modules/functionApp.bicep' = {
   }
 }
 
-// Permissions for Contributor access:
-resource cosmosDbSqlRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: '${appName}-${environmentName}-CosmosDBReaderRole'
-  properties: {
-    roleDefinitionId: subscriptionResourceId(
-      subscription().id,
-      'Microsoft.DocumentDB/roles/Cosmos DB Built-in Data Contributor'
-    ) // Or Contributor
-    principalId: functionAppModule.outputs.functionAppPrincipalId
-    principalType: 'ServicePrincipal'
-  }
-  dependsOn: [
-    cosmosDbModule
-  ]
-}
-
 @description('Name of the deployed Function App')
 output functionAppName string = functionAppModule.outputs.functionAppName
