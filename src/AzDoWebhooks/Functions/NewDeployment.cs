@@ -4,6 +4,9 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using AzDoWebhooks.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Azure.Cosmos;
+using Azure.Identity;
+using System.Net;
 
 namespace AzDoWebhooks.Functions;
 
@@ -19,19 +22,33 @@ public class NewDeployment
     }
 
     [Function("NewDeployment")]
-    [CosmosDBOutput(databaseName: "azdodeploy-db", containerName: "deployments", Connection = "CosmosDbConnection", CreateIfNotExists = true)]
-    public Deployment Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
+    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
     {
         _logger.LogInformation("Received webhook request from Azure DevOps.");
         _logger.LogInformation(_configuration["CosmosDbConnection"]);
 
-        return new()
+        CosmosClient client = new(
+            accountEndpoint: _configuration["CosmosDbConnection"],
+            tokenCredential: new DefaultAzureCredential()
+        );
+
+        var database = client.GetDatabase("azdodeploy-db");
+        var container = database.GetContainer("deployments");
+
+        Deployment deployment = new()
         {
             Environment = "Production",
             Status = "In Progress",
             DeploymentTime = DateTime.UtcNow,
             Project = "Contoso",
         };
+
+        ItemResponse<Deployment> response = await container.UpsertItemAsync<Deployment>(
+            item: deployment,
+            partitionKey: new PartitionKey(deployment.Id.ToString())
+        );
+
+        return new OkObjectResult($"Successfully added new deployment {deployment.Id.ToString()}");
     }
 }
 
