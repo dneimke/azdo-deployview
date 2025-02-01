@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Azure.Cosmos;
 using Azure.Identity;
 using FromBodyAttribute = Microsoft.Azure.Functions.Worker.Http.FromBodyAttribute;
+using Microsoft.Azure.Functions.Worker.Http;
 
 namespace AzDoWebhooks.Functions;
 
@@ -22,7 +23,7 @@ public class NewDeployment
     }
 
     [Function("NewDeployment")]
-    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req,
+    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req,
         [FromBody] DeploymentRequest azureDeployment)
     {
         _logger.LogInformation("Received webhook request from Azure DevOps.");
