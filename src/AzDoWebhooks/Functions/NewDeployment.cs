@@ -41,6 +41,7 @@ public class NewDeployment
             Status = "In Progress",
             DeploymentTime = DateTime.UtcNow,
             Project = "Contoso",
+            partitionKey = "Contoso"
         };
 
         try
