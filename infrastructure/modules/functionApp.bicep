@@ -2,7 +2,6 @@ param location string
 param appName string
 param tags object
 param storageAccountName string
-param cosmosConnectionString string
 param appInsightsKey string
 
 var functionAppName = '${appName}-func'
@@ -46,10 +45,6 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
         {
           name: 'AzureWebJobsStorage'
           value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${storageAccountKey}'
-        }
-        {
-          name: 'CosmosDbConnection'
-          value: cosmosConnectionString
         }
         {
           name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'

@@ -12,7 +12,6 @@ param appName string = 'azdodeploy'
 
 // Generate unique suffix
 var uniqueSuffix = uniqueString(resourceGroup().id, appName, environmentName)
-var resourceGroupName = resourceGroup().name
 
 // Tags
 var tags = {
