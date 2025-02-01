@@ -16,7 +16,7 @@ public class NewDeployment
     }
 
     [Function("NewDeployment")]
-    [CosmosDBOutput(databaseName: "azdodeploy-db", containerName: "deployments", Connection = "https://azdodeploy.documents.azure.com:443/", CreateIfNotExists = true)]
+    [CosmosDBOutput(databaseName: "azdodeploy-db", containerName: "deployments", Connection = "CosmosDbConnection", CreateIfNotExists = true)]
     public Deployment Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
     {
         _logger.LogInformation("Received webhook request from Azure DevOps.");
