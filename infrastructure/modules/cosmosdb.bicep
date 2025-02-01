@@ -4,7 +4,7 @@ param location string
 param accountName string = 'sql-${uniqueString(resourceGroup().id)}'
 
 @description('The partition key for the container')
-param partitionKeyPath string = '/project'
+param partitionKeyPath string = '/partitionKey'
 
 @minValue(400)
 @maxValue(1000000)
