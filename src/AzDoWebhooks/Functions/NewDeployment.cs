@@ -58,6 +58,7 @@ public class NewDeployment
             var deployTime = match.Groups["DeployTime"].Value;
             var projectName = deployRequest.Resource.Project.Name;
             var releasePipeline = deployRequest.Resource.Environment.ReleaseDefinition.Name;
+            var partitionKey = $"{releasePipeline}-{stageName}";
 
             deployment = new()
             {
@@ -71,7 +72,7 @@ public class NewDeployment
                 DeploymentDuration = deployTime,
                 Project = projectName,
                 Message = deployRequest.DetailedMessage.Text,
-                partitionKey = projectName
+                partitionKey = partitionKey
             };
         }
         catch (Exception ex)
@@ -95,7 +96,7 @@ public class NewDeployment
 
             var response = await container.CreateItemAsync<DeploymentResponse>(
                 item: deployment,
-                partitionKey: new PartitionKey(deployment.Project)
+                partitionKey: new PartitionKey(deployment.partitionKey)
             );
 
             _logger.LogInformation("Successfully added new deployment {deploymentId}", deployment.id);

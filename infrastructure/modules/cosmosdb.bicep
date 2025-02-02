@@ -54,18 +54,13 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
           {
             path: '/'
           }
-          {
-            path: '/environment/*'
-          }
-          {
-            path: '/project/*'
-          }
         ]
         excludedPaths: []
       }
       partitionKey: {
         paths: [
-          partitionKeyPath
+          '/ReleasePipeline'
+          '/Stage'
         ]
         kind: 'Hash'
       }
