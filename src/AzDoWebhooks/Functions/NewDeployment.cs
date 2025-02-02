@@ -65,7 +65,7 @@ public class NewDeployment
                 var database = client.GetDatabase("azdodeploy-db");
                 var container = database.GetContainer("deployments");
 
-                var response = await container.UpsertItemAsync<DeploymentResponse>(
+                var response = await container.CreateItemAsync<DeploymentResponse>(
                     item: deployment,
                     partitionKey: new PartitionKey(deployment.Project)
                 );
