@@ -77,6 +77,8 @@ public class NewDeployment
                     partitionKey: new PartitionKey(deployment.Project)
                 );
 
+                _logger.LogInformation("Successfully added new deployment {deploymentId}", deployment.id);
+
                 return new OkObjectResult($"Successfully added new deployment {deployment.id}");
             }
             catch (Exception ex)
