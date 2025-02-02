@@ -37,57 +37,66 @@ public class NewDeployment
                                cosmosDatabase,
                                cosmosContainer);
 
-        string pattern = @"Deployment of release (?<ReleaseName>[\w-]+) on stage (?<StageName>\w+) (?<Status>\w+)\. Time to deploy: (?<DeployTime>\d+\.\d+) minutes\.";
+        string pattern = @"Deployment of release (?<ReleaseName>[\w-]+) on stage (?<StageName>\w+) (?<Status>\w+)\. Time to deploy: (?<DeployTime>\d+\.\d+)";
         Match match = Regex.Match(deployRequest.DetailedMessage.Text, pattern);
 
-        if (match.Success)
+        if (!match.Success)
         {
-
-            var releaseName = match.Groups["ReleaseName"].Value;
-            var stageName = match.Groups["StageName"].Value;
-            var status = match.Groups["Status"].Value;
-            var deployTime = match.Groups["DeployTime"].Value;
-            var projectId = deployRequest.ResourceContainers.Project.Id.ToString();
-
-            DeploymentResponse deployment = new()
-            {
-                EventType = deployRequest.EventType,
-                ReleaseName = releaseName,
-                Environment = stageName,
-                Status = status,
-                DeploymentDateTime = deployRequest.CreatedDate.Date,
-                DeploymentDuration = deployTime,
-                Project = projectId,
-                Message = deployRequest.DetailedMessage.Text,
-                partitionKey = projectId
-            };
-
-            try
-            {
-                CosmosClient client = new(
-                    accountEndpoint: cosmosEndpoint,
-                    tokenCredential: new DefaultAzureCredential()
-                );
-
-                var database = client.GetDatabase(cosmosDatabase);
-                var container = database.GetContainer(cosmosContainer);
-
-                var response = await container.CreateItemAsync<DeploymentResponse>(
-                    item: deployment,
-                    partitionKey: new PartitionKey(deployment.Project)
-                );
-
-                _logger.LogInformation("Successfully added new deployment {deploymentId}", deployment.id);
-
-                return new OkObjectResult($"Successfully added new deployment {deployment.id}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("An error occurred while attempting to add {deploymentId}. {exceptionMessage}", deployment.id, ex.ToString());
-            }
+            return new BadRequestObjectResult(new { error = "Invalid input data." });
         }
 
-        return new BadRequestResult();
+        var releaseName = match.Groups["ReleaseName"].Value;
+        var stageName = match.Groups["StageName"].Value;
+        var status = match.Groups["Status"].Value;
+        var deployTime = match.Groups["DeployTime"].Value;
+        var projectId = deployRequest.ResourceContainers.Project.Id.ToString();
+
+        DeploymentResponse deployment = new()
+        {
+            EventType = deployRequest.EventType,
+            ReleaseName = releaseName,
+            Environment = stageName,
+            Status = status,
+            DeploymentDateTime = deployRequest.CreatedDate.Date,
+            DeploymentDuration = deployTime,
+            Project = projectId,
+            Message = deployRequest.DetailedMessage.Text,
+            partitionKey = projectId
+        };
+
+        try
+        {
+            CosmosClient client = new(
+                accountEndpoint: cosmosEndpoint,
+                tokenCredential: new DefaultAzureCredential()
+            );
+
+            var database = client.GetDatabase(cosmosDatabase);
+            var container = database.GetContainer(cosmosContainer);
+
+            var response = await container.CreateItemAsync<DeploymentResponse>(
+                item: deployment,
+                partitionKey: new PartitionKey(deployment.Project)
+            );
+
+            _logger.LogInformation("Successfully added new deployment {deploymentId}", deployment.id);
+
+            return new OkObjectResult(new
+            {
+                message = $"Successfully added new deployment {deployment.id}",
+                data = new
+                {
+                    AzDoDeploymentId = deployRequest.Id,
+                    CosmosDeploymentId = deployment.id
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("An error occurred while attempting to add {deploymentId}. {exceptionMessage}", deployment.id, ex.ToString());
+        }
+
+        return new StatusCodeResult(500);
     }
 }
 
