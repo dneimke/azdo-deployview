@@ -42,6 +42,7 @@ public class NewDeployment
 
         if (!match.Success)
         {
+            _logger.LogWarning("{messageText} did not match the expected pattern.", deployRequest.DetailedMessage.Text);
             return new BadRequestObjectResult(new { error = "Invalid input data." });
         }
 
