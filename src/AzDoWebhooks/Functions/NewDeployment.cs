@@ -71,8 +71,7 @@ public class NewDeployment
                 DeploymentDateTime = deployRequest.CreatedDate.DateTime,
                 DeploymentDuration = deployTime,
                 Project = projectName,
-                Message = deployRequest.DetailedMessage.Text,
-                partitionKey = partitionKey
+                Message = deployRequest.DetailedMessage.Text
             };
         }
         catch (Exception ex)
@@ -94,15 +93,9 @@ public class NewDeployment
             var database = client.GetDatabase(cosmosDatabase);
             var container = database.GetContainer(cosmosContainer);
 
-            var partitionKey = new PartitionKeyBuilder()
-                .Add(deployment.ReleasePipeline)
-                .Add(deployment.Stage)
-                .Build();
-
-
             var response = await container.CreateItemAsync(
                 item: deployment,
-                partitionKey: partitionKey
+                partitionKey: new PartitionKey(deployment.ReleasePipeline)
             );
 
             _logger.LogInformation("Successfully added new deployment {deploymentId}", deployment.id);
@@ -123,7 +116,7 @@ public class NewDeployment
                 ex,
                 "An error occurred while attempting to add {deploymentId} with partitionKey {partitionKey}. {exceptionMessage}",
                 deployment.id,
-                deployment.partitionKey,
+                deployment.ReleasePipeline,
                 ex.ToString()
                 );
         }

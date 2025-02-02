@@ -57,9 +57,8 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
       partitionKey: {
         paths: [
           '/ReleasePipeline'
-          '/Stage'
         ]
-        kind: 'MultiHash'
+        kind: 'Hash'
         version: 2
       }
       defaultTtl: 86400

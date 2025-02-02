@@ -13,6 +13,4 @@ public class DeploymentResponse
     public DateTime DeploymentDateTime { get; set; }
     public string DeploymentDuration { get; set; } = "";
     public string Message { get; set; } = "";
-    public string partitionKey { get; set; } = "";
-
 }
