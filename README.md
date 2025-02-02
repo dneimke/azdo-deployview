@@ -37,58 +37,23 @@ graph LR
     E[PowerShell Scripts] -->|Manage Webhooks| A;
 ```
 
-## Data Model
-
-The database schema consists of:
-
-- **Projects:**
-
-  - `project_id` (INT, Primary Key)
-  - `project_name` (VARCHAR(255), Unique)
-  - `project_group` (VARCHAR(255))
-
-- **Environments:**
-
-  - `environment_id` (INT, Primary Key)
-  - `environment_name` (VARCHAR(255), Unique)
-
-- **Releases:**
-
-  - `release_id` (INT, Primary Key)
-  - `project_id` (INT, Foreign Key)
-  - `version` (VARCHAR(255))
-  - `release_notes` (TEXT, Optional)
-  - `created_time` (DATETIME)
-
-- **Deployments:**
-  - `deployment_id` (INT, Primary Key)
-  - `release_id` (INT, Foreign Key)
-  - `environment_id` (INT, Foreign Key)
-  - `start_time` (DATETIME)
-  - `end_time` (DATETIME)
-  - `status` (VARCHAR(50))
-  - `deployed_by` (VARCHAR(255), Optional)
-  - `deployment_details` (TEXT, Optional)
-
 ## Webhook Events
 
 The solution listens for the following Azure DevOps webhook events:
 
-- `release created`
-- `release deployment started`
 - `release deployment completed`
-- `release deployment approval pending` (Optional)
-- `release deployment approval completed` (Optional)
 
 ## Technology Stack
 
 - **Backend:**
   - Azure Functions (C#)
-  - Azure SQL Database
+  - Azure CosmosDB
 - **Frontend:**
   - Blazor (Server or WebAssembly - to be determined)
+  - or [Retool](https://retool.com/)
 - **Infrastructure:**
   - Azure DevOps
+  - Bicep
   - PowerShell
 - **Development Environment:**
   - VS Code
