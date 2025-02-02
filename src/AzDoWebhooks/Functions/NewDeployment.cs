@@ -113,7 +113,13 @@ public class NewDeployment
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while attempting to add {deploymentId}. {exceptionMessage}", deployment.id, ex.ToString());
+            _logger.LogError(
+                ex,
+                "An error occurred while attempting to add {deploymentId} with partitionKey {partitionKey}. {exceptionMessage}",
+                deployment.id,
+                deployment.partitionKey,
+                ex.ToString()
+                );
         }
 
         return new StatusCodeResult(500);
