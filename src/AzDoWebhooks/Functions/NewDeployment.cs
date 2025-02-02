@@ -37,7 +37,7 @@ public class NewDeployment
                                cosmosDatabase,
                                cosmosContainer);
 
-        string pattern = @"Deployment of release (?<ReleaseName>[\w-]+) on stage (?<StageName>\w+) (?<Status>\w+)\. Time to deploy: (?<DeployTime>\d+\.\d+)";
+        string pattern = @"Deployment of release (?<ReleaseName>[\w-]+) on stage (?<StageName>[\w\s]+) (?<Status>\w+)\. Time to deploy: (?:(?<DeployTimeMinutes>\d+\.\d+) minutes\.|(?<DeployTime>[\d:]+))\.";
         Match match = Regex.Match(deployRequest.DetailedMessage.Text, pattern);
 
         if (!match.Success)
