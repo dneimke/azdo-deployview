@@ -94,9 +94,15 @@ public class NewDeployment
             var database = client.GetDatabase(cosmosDatabase);
             var container = database.GetContainer(cosmosContainer);
 
-            var response = await container.CreateItemAsync<DeploymentResponse>(
+            var partitionKey = new PartitionKeyBuilder()
+                .Add(deployment.ReleasePipeline)
+                .Add(deployment.Stage)
+                .Build();
+
+
+            var response = await container.CreateItemAsync(
                 item: deployment,
-                partitionKey: new PartitionKey(deployment.partitionKey)
+                partitionKey: partitionKey
             );
 
             _logger.LogInformation("Successfully added new deployment {deploymentId}", deployment.id);
