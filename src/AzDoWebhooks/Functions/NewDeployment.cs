@@ -46,27 +46,42 @@ public class NewDeployment
             return new BadRequestObjectResult(new { error = "Invalid input data." });
         }
 
-        var releaseNumber = match.Groups["ReleaseNumber"].Value;
-        var stageName = match.Groups["StageName"].Value;
-        var status = match.Groups["Status"].Value;
-        var deployTime = match.Groups["DeployTime"].Value;
-        var projectName = deployRequest.Resource.Project.Name;
-        var releasePipeline = deployRequest.Resource.Environment.ReleaseDefinition.Name;
+        _logger.LogInformation("Started processing. Mapping inputs to output POCO");
 
-        DeploymentResponse deployment = new()
+        DeploymentResponse deployment = new();
+
+        try
         {
-            EventType = deployRequest.EventType,
-            ReleasePipeline = releasePipeline,
-            ReleaseNumber = releaseNumber,
-            Environment = stageName,
-            Stage = stageName,
-            Status = status,
-            DeploymentDateTime = deployRequest.CreatedDate.DateTime,
-            DeploymentDuration = deployTime,
-            Project = projectName,
-            Message = deployRequest.DetailedMessage.Text,
-            partitionKey = projectName
-        };
+            var releaseNumber = match.Groups["ReleaseNumber"].Value;
+            var stageName = match.Groups["StageName"].Value;
+            var status = match.Groups["Status"].Value;
+            var deployTime = match.Groups["DeployTime"].Value;
+            var projectName = deployRequest.Resource.Project.Name;
+            var releasePipeline = deployRequest.Resource.Environment.ReleaseDefinition.Name;
+
+            deployment = new()
+            {
+                EventType = deployRequest.EventType,
+                ReleasePipeline = releasePipeline,
+                ReleaseNumber = releaseNumber,
+                Environment = stageName,
+                Stage = stageName,
+                Status = status,
+                DeploymentDateTime = deployRequest.CreatedDate.DateTime,
+                DeploymentDuration = deployTime,
+                Project = projectName,
+                Message = deployRequest.DetailedMessage.Text,
+                partitionKey = projectName
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while mapping inputs to outputs. Aborting processing.");
+        }
+
+
+
+        _logger.LogInformation("Completed mapping inputs to output POCO");
 
         try
         {
@@ -97,7 +112,7 @@ public class NewDeployment
         }
         catch (Exception ex)
         {
-            _logger.LogError("An error occurred while attempting to add {deploymentId}. {exceptionMessage}", deployment.id, ex.ToString());
+            _logger.LogError(ex, "An error occurred while attempting to add {deploymentId}. {exceptionMessage}", deployment.id, ex.ToString());
         }
 
         return new StatusCodeResult(500);
