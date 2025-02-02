@@ -51,11 +51,12 @@ public class NewDeployment
         var status = match.Groups["Status"].Value;
         var deployTime = match.Groups["DeployTime"].Value;
         var projectName = deployRequest.Resource.Project.Name;
+        var releasePipeline = deployRequest.Resource.Environment.ReleaseDefinition.Name;
 
         DeploymentResponse deployment = new()
         {
             EventType = deployRequest.EventType,
-            ReleaseName = deployRequest.Resource.ReleaseDefinition.Name,
+            ReleasePipeline = releasePipeline,
             ReleaseNumber = releaseNumber,
             Environment = stageName,
             Stage = stageName,
