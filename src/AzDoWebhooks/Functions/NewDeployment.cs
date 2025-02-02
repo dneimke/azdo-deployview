@@ -37,7 +37,7 @@ public class NewDeployment
                                cosmosDatabase,
                                cosmosContainer);
 
-        string pattern = @"Deployment of release (?<ReleaseName>[\w-]+) on stage (?<StageName>[\w\s]+) (?<Status>\w+)\. Time to deploy: (?:(?<DeployTimeMinutes>\d+\.\d+) minutes\.|(?<DeployTime>[\d:]+))\.";
+        string pattern = @"Deployment of release (?<ReleaseNumber>[\w-]+) on stage (?<StageName>[\w\s]+) (?<Status>\w+)\. Time to deploy: (?:(?<DeployTimeMinutes>\d+\.\d+) minutes\.|(?<DeployTime>[\d:]+))\.";
         Match match = Regex.Match(deployRequest.DetailedMessage.Text, pattern);
 
         if (!match.Success)
@@ -46,23 +46,25 @@ public class NewDeployment
             return new BadRequestObjectResult(new { error = "Invalid input data." });
         }
 
-        var releaseName = match.Groups["ReleaseName"].Value;
+        var releaseNumber = match.Groups["ReleaseNumber"].Value;
         var stageName = match.Groups["StageName"].Value;
         var status = match.Groups["Status"].Value;
         var deployTime = match.Groups["DeployTime"].Value;
-        var projectId = deployRequest.ResourceContainers.Project.Id.ToString();
+        var projectName = deployRequest.Resource.Project.Name;
 
         DeploymentResponse deployment = new()
         {
             EventType = deployRequest.EventType,
-            ReleaseName = releaseName,
+            ReleaseName = deployRequest.Resource.ReleaseDefinition.Name,
+            ReleaseNumber = releaseNumber,
             Environment = stageName,
+            Stage = stageName,
             Status = status,
-            DeploymentDateTime = deployRequest.CreatedDate.Date,
+            DeploymentDateTime = deployRequest.CreatedDate.DateTime,
             DeploymentDuration = deployTime,
-            Project = projectId,
+            Project = projectName,
             Message = deployRequest.DetailedMessage.Text,
-            partitionKey = projectId
+            partitionKey = projectName
         };
 
         try

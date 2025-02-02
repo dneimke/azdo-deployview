@@ -65,6 +65,12 @@ public partial class Message
 
 public partial class Resource
 {
+    [JsonPropertyName("releaseDefinition")]
+    public ReleaseDefinition ReleaseDefinition { get; set; }
+
+    [JsonPropertyName("project")]
+    public Project Project { get; set; }
+
     [JsonPropertyName("id")]
     public long Id { get; set; }
 
@@ -76,6 +82,34 @@ public partial class Resource
 
     [JsonPropertyName("attemptId")]
     public long AttemptId { get; set; }
+}
+
+public partial class Project
+{
+    [JsonPropertyName("id")]
+    public Guid Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+}
+
+public partial class ReleaseDefinition
+{
+    [JsonPropertyName("id")]
+    public long Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonPropertyName("projectReference")]
+    public object ProjectReference { get; set; }
+
+    [JsonPropertyName("_links")]
+    public Links Links { get; set; }
+}
+
+public partial class Links
+{
 }
 
 public partial class ResourceContainers
