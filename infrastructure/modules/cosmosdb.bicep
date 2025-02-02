@@ -62,7 +62,8 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
           '/ReleasePipeline'
           '/Stage'
         ]
-        kind: 'Hash'
+        kind: 'MultiHash'
+        version: 2
       }
       defaultTtl: 86400
     }
