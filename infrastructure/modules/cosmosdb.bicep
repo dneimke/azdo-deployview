@@ -3,9 +3,6 @@ param location string
 @description('Azure Cosmos DB account name, max length 44 characters')
 param accountName string = 'sql-${uniqueString(resourceGroup().id)}'
 
-@description('The partition key for the container')
-param partitionKeyPath string = '/partitionKey'
-
 @minValue(400)
 @maxValue(1000000)
 @description('The throughput for the container')
