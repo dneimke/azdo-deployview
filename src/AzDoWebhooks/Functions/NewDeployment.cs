@@ -37,18 +37,18 @@ public class NewDeployment
         var database = client.GetDatabase("azdodeploy-db");
         var container = database.GetContainer("deployments");
 
-        Deployment deployment = new()
+        DeploymentResponse deployment = new()
         {
-            Environment = azureDeployment.Environment,
-            Status = azureDeployment.Status,
-            DeploymentTime = azureDeployment.DeploymentTime,
-            Project = azureDeployment.Project,
-            partitionKey = azureDeployment.Project
+            Environment = azureDeployment.SubscriptionId.ToString(),
+            Status = azureDeployment.EventType,
+            DeploymentTime = azureDeployment.CreatedDate.Date,
+            Project = azureDeployment.Message.Text,
+            partitionKey = azureDeployment.Message.Text
         };
 
         try
         {
-            var response = await container.UpsertItemAsync<Deployment>(
+            var response = await container.UpsertItemAsync<DeploymentResponse>(
                 item: deployment,
                 partitionKey: new PartitionKey(deployment.Project)
             );
