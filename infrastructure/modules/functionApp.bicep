@@ -55,6 +55,14 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
           value: 'https://azdodeploy.documents.azure.com:443/'
         }
         {
+          name: 'CosmosDatabaseName'
+          value: 'azdodeploy-db'
+        }
+        {
+          name: 'CosmosContainerName'
+          value: 'deployments/'
+        }
+        {
           name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
           value: appInsightsKey
         }

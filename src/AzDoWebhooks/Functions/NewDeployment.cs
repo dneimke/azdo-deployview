@@ -27,8 +27,15 @@ public class NewDeployment
     public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req,
         [FromBody] DeploymentRequest deployRequest)
     {
+        var cosmosEndpoint = _configuration["CosmosDbConnection"];
+        var cosmosDatabase = _configuration["CosmosDatabaseName"];
+        var cosmosContainer = _configuration["CosmosContainerName"];
+
         _logger.LogInformation("Received webhook request from Azure DevOps.");
-        _logger.LogInformation(_configuration["CosmosDbConnection"]);
+        _logger.LogInformation("Cosmos endpoint: {cosmosEndpoint}; database: {cosmosDatabase}; container: {cosmosContainer}",
+                               cosmosEndpoint,
+                               cosmosDatabase,
+                               cosmosContainer);
 
         string pattern = @"Deployment of release (?<ReleaseName>[\w-]+) on stage (?<StageName>\w+) (?<Status>\w+)\. Time to deploy: (?<DeployTime>\d+\.\d+) minutes\.";
         Match match = Regex.Match(deployRequest.DetailedMessage.Text, pattern);
@@ -58,12 +65,12 @@ public class NewDeployment
             try
             {
                 CosmosClient client = new(
-                    accountEndpoint: _configuration["CosmosDbConnection"],
+                    accountEndpoint: cosmosEndpoint,
                     tokenCredential: new DefaultAzureCredential()
                 );
 
-                var database = client.GetDatabase("azdodeploy-db");
-                var container = database.GetContainer("deployments");
+                var database = client.GetDatabase(cosmosDatabase);
+                var container = database.GetContainer(cosmosContainer);
 
                 var response = await container.CreateItemAsync<DeploymentResponse>(
                     item: deployment,
